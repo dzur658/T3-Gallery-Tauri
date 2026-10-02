@@ -172,6 +172,12 @@ importers:
       '@t3-oss/env-nextjs':
         specifier: ^0.12.0
         version: 0.12.0(typescript@5.9.3)(zod@3.25.76)
+      '@tauri-apps/api':
+        specifier: ^2.12.1
+        version: 2.12.1
+      '@tauri-apps/plugin-fs':
+        specifier: ~2.6.0
+        version: 2.6.0
       drizzle-orm:
         specifier: ^0.41.0
         version: 0.41.0(@libsql/client@0.14.0)(gel@2.2.1(supports-color@7.2.0))
@@ -1035,6 +1041,12 @@ packages:
 
   '@tailwindcss/postcss@4.3.3':
     resolution: {integrity: sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg==}
+
+  '@tauri-apps/api@2.12.1':
+    resolution: {integrity: sha512-DeyFHa3wynpyoqTDikDEDGTJIq4LQ5USfolQGRmGIWT6JMADyxZBTDa5cAdT3tDg73rUXufPaCwN7aXBos4OnQ==}
+
+  '@tauri-apps/plugin-fs@2.6.0':
+    resolution: {integrity: sha512-MhBAZ4rryd+h9fijd/GWDfArqiAeGI0ZNduV4wuRyUVI6wDZ+oDBY7atqtoXKDwlTUVSvpvmWJAY0ehQd/v6Uw==}
 
   '@tybys/wasm-util@0.10.4':
     resolution: {integrity: sha512-W3c4gRigFS0T/Ma4qIYF3GDAc5AQdHb1yL5znJT1Zv1YaD9Kitx656wBjvr19qbiosmZT8lWDM5BEMynUqX65A==}
@@ -3254,6 +3266,12 @@ snapshots:
       '@tailwindcss/oxide': 4.3.3
       postcss: 8.5.28
       tailwindcss: 4.3.3
+
+  '@tauri-apps/api@2.12.1': {}
+
+  '@tauri-apps/plugin-fs@2.6.0':
+    dependencies:
+      '@tauri-apps/api': 2.12.1
 
   '@tybys/wasm-util@0.10.4':
     dependencies:
