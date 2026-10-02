@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { homeDir, join } from "@tauri-apps/api/path";
+import { pictureDir, join } from "@tauri-apps/api/path";
 import { readDir } from "@tauri-apps/plugin-fs";
 import Lightbox from "./components/Lightbox";
 
@@ -12,18 +12,27 @@ export default function Page() {
   // picture clicker tracker
   const [selected, setSelected] = useState<string | null>(null);
 
+  const handleClose = () => setSelected(null);
+
+  const handleNavigate = (direction: 1 | -1) => {
+    if (!selected) return;
+    const currentIndex = images.indexOf(selected);
+    const nextImage = images[currentIndex + direction];
+    if (nextImage) {
+      setSelected(nextImage);
+    };
+
+  };
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!("__TAURI_INTERNALS__" in window)) return;
 
     (async () => {
       try {
-        const homedir = await homeDir();
-        
-        // picture dir
-        const dir = `${homedir}/Pictures`;
+        const dir = await pictureDir();
 
-        // console.log("Home directory:", dir);
+        console.log("Pictures", dir);
         const entries = await readDir(dir);
         const paths = entries
           .filter(
@@ -55,7 +64,7 @@ export default function Page() {
           ))}
         </div>
       )}
-      <Lightbox images={images} selected={selected} onClose={() => setSelected(null)} />
+      <Lightbox selected={selected} onClose={handleClose} onNavigate={handleNavigate} />
     </main>
   );
 }

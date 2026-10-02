@@ -1,35 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface LightboxProps {
-  images: string[];
   selected: string | null;
   onClose: () => void;
+  onNavigate: (direction: 1 | -1) => void;
 }
 
-export default function Lightbox({ images, selected, onClose }: LightboxProps) {
-  const [lastKey, setLastkey] = useState("");
-  // let [selected, setSelected] = useState<string | null>(null);
-
-  // handle key down
-  const handleKeyDown = (event: KeyboardEvent) => {
-    setLastkey(event.key);
-  };
-
+export default function Lightbox({ selected, onClose, onNavigate }: LightboxProps) {
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
+    if (!selected) return; // don't listen at all when closed
 
-    console.log("Last key pressed:", lastKey);
-    if (lastKey === "Escape") {
-      setLastkey("");
-      onClose();
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.repeat) return;
+      if (event.key === "Escape") {
+        onClose();
+      } else if (event.key === "ArrowLeft") {
+        onNavigate(-1);
+      } else if (event.key === "ArrowRight") {
+        onNavigate(1);
+      }
     };
-  }, [selected, images]);
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey); // exact mirror of add
+  }, [selected, onClose, onNavigate]);
 
   if (!selected) return null;
 
