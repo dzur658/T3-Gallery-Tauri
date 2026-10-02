@@ -4,9 +4,13 @@ import { useEffect, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { homeDir, join } from "@tauri-apps/api/path";
 import { readDir } from "@tauri-apps/plugin-fs";
+import Lightbox from "./components/Lightbox";
 
 export default function Page() {
   const [images, setImages] = useState<string[]>([]);
+
+  // picture clicker tracker
+  const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -33,20 +37,25 @@ export default function Page() {
     })();
   }, []);
 
-  console.log("Loaded images:", images);
-
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Pictures</h1>
+    <main className="p-8 bg-slate-900 min-h-screen text-slate-100">
+      <h1 className="text-3xl font-bold tracking-tight mb-6 border-b border-slate-700 pb-4">Pictures</h1>
       {images.length === 0 ? (
         <p>No images found (or not running inside Tauri).</p>
       ) : (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {images.map((src) => (
-            <img key={src} src={src} alt="" className="rounded shadow" />
+            <div key={src} className="overflow-hidden rounded-lg cursor-pointer hover:ring-2 hover:ring-blue-500 transition">
+              <img  
+              src={src} 
+              alt=""
+              onClick={() => setSelected(src)}
+              className="w-full h-48 object-cover rounded-lg" />
+            </div>
           ))}
         </div>
       )}
+      <Lightbox images={images} selected={selected} onClose={() => setSelected(null)} />
     </main>
   );
 }
