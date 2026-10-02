@@ -3,7 +3,7 @@
 ## TODO
 
 - [x] Make it deploy (Tauri)
-- [ ] Scaffold basic ui with mock data
+- [x] Scaffold basic ui with mock data
 - [ ] Actually set up a database (Tauri / SQLite)
 - [ ] Attach database to UI
 - [ ] Add authentication (w/ clerk)
