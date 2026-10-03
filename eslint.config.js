@@ -9,7 +9,12 @@ const compat = new FlatCompat({
 
 export default tseslint.config(
   {
-    ignores: [".next"],
+    ignores: [
+      ".next",
+      "next-env.d.ts",
+      "postcss.config.js",
+      "prettier.config.js",
+    ],
   },
   ...compat.extends("next/core-web-vitals"),
   {
@@ -46,6 +51,15 @@ export default tseslint.config(
         "error",
         { drizzleObjectName: ["db", "ctx.db"] },
       ],
+    },
+  },
+  {
+    files: [
+      "src/app/components/Lightbox.tsx",
+      "src/app/page.tsx",
+    ],
+    rules: {
+      "@next/next/no-img-element": "off",
     },
   },
   {

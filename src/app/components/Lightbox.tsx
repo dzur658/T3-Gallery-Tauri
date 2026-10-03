@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { load_image, TextStreamer, PreTrainedTokenizer } from "@huggingface/transformers"
+import type { Tensor } from "@huggingface/transformers";
 
 import { getVLM } from "../../lib/vlm";
 
@@ -16,11 +17,12 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
   const [caption, setCaption] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setCaption(null);
     setLoading(false);
     onClose();
-  };
+  }, [onClose]);
+
 
   const handleCaption = async ( ) => {
     setLoading(true);
@@ -48,11 +50,14 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
 
       const image = await load_image(selected);
       const audio = null;
-      const inputs = await processor(prompt, image, audio, {
+      const inputs: Record<string, Tensor> = await processor(prompt, image, audio, {
         add_special_tokens: false,
       });
 
-      const out = await model.generate({
+      console.log("Object Keys:", Object.keys(inputs));
+      console.log("Dimensions/shapes of tensors:", inputs.input_features);
+
+      await model.generate({
         ...inputs,
         max_new_tokens: 100,
         do_sample: false,

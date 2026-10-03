@@ -1,4 +1,6 @@
 // src/lib/vlm.ts
+/// <reference types="@webgpu/types" />
+
 import { 
   AutoProcessor,
   AutoModelForImageTextToText,
@@ -26,8 +28,6 @@ type VLM = Awaited<ReturnType<typeof createVLM>>;
 let vlmPromise: Promise<VLM> | null = null;
 
 export function getVLM(): Promise<VLM> {
-  if (!vlmPromise) {
-    vlmPromise = createVLM();
-  }
+  vlmPromise = vlmPromise ?? createVLM();
   return vlmPromise;
 }

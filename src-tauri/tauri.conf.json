@@ -2,7 +2,7 @@
   "$schema": "../../../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "VLM Gallery",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.dzur658.dev",
   "build": {
     "frontendDist": "t3-gallery-adapted",
     "devUrl": "http://localhost:3000",

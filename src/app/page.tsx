@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { convertFileSrc } from "@tauri-apps/api/core";
 import { pictureDir, join } from "@tauri-apps/api/path";
 import { readDir } from "@tauri-apps/plugin-fs";
+
 import Lightbox from "./components/Lightbox";
+
 import { load_image, TextStreamer, PreTrainedTokenizer } from "@huggingface/transformers";
 
 import { getVLM } from "../lib/vlm";
@@ -77,7 +80,7 @@ export default function Page() {
           add_special_tokens: false,
         });
   
-        const out = await model.generate({
+        await model.generate({
           ...inputs,
           max_new_tokens: 500,
           do_sample: true,
@@ -127,7 +130,7 @@ export default function Page() {
             (e) => e.isFile && /\.(jpg|png|gif|webp|avif|bmp)$/i.test(e.name)
           )
           .map(async (e) => convertFileSrc(await join(dir, e.name)));
-        await setImages(await Promise.all(paths));
+        setImages(await Promise.all(paths));
       } catch (err) {
         console.error("Failed to load pictures:", err);
       }
@@ -163,8 +166,10 @@ export default function Page() {
               > ✓ </button>
               
               <img  
-              src={src} 
+              src={src}
               alt=""
+              loading="lazy"
+              decoding="async"
               onClick={() => setSelected(src)}
               className="w-full h-48 object-cover rounded-lg" />
             </div>

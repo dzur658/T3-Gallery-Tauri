@@ -5,6 +5,11 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+    images: {
+        // No image optimization needed since images are fetched from localhost
+        unoptimized: true,
+    },
+};
 
 export default config;
