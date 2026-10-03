@@ -16,6 +16,12 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
   const [caption, setCaption] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const handleClose = () => {
+    setCaption(null);
+    setLoading(false);
+    onClose();
+  };
+
   const handleCaption = async ( ) => {
     setLoading(true);
     setCaption("");
@@ -74,7 +80,7 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
     const onKey = (event: KeyboardEvent) => {
       if (event.repeat) return;
       if (event.key === "Escape") {
-        onClose();
+        handleClose();
       } else if (event.key === "ArrowLeft") {
         onNavigate(-1);
       } else if (event.key === "ArrowRight") {
@@ -83,8 +89,8 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
     };
 
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey); // exact mirror of add
-  }, [selected, onClose, onNavigate]);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selected, handleClose, onNavigate]);
 
   if (!selected) return null;
 
@@ -94,20 +100,25 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
     >
       <button
         className="absolute top-4 right-4 text-white text-2xl cursor-pointer"
-        onClick={onClose}
+        onClick={handleClose}
       >
         &times;
       </button>
       <img src={selected} alt="" className="max-w-full max-h-full rounded-lg shadow-2xl" />
 
+        {caption && 
+        <div className="absolute bottom-15 left-2 right-2 bg-slate-800/85 backdrop-blur-sm border border-slate-700 rounded-lg px-3 py-2 shadow-lg mb-3 mx-4">
+          <p className="text-sm text-slate-200 leading-snug">{caption}</p>
+        </div>
+        }
+
       <button
         onClick={handleCaption}
         disabled={loading}
-        className="fixed bottom-4 mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-lg cursor-pointer"
+        className="fixed bottom-4 mt-4 px-4 py-2 bg-purple-600 shadow-lg hover:bg-purple-500 disabled:opacity-50 text-white rounded-lg cursor-pointer disabled:cursor-wait"
       >
-        {loading ? "Thinking…" : "Caption this"}
+        {loading ? "Creating…" : "Caption this"}
       </button>
-      {caption && <p className="mt-3 text-white text-sm max-w-xl text-center">{caption}</p>}
     </div>
   );
 }
