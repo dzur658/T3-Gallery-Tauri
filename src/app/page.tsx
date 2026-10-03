@@ -136,7 +136,7 @@ export default function Page() {
 
   return (
     <main className="p-8 bg-slate-900 min-h-screen text-slate-100">
-      <h1 className="text-3xl font-bold tracking-tight mb-6 border-b border-slate-700 pb-4">Pictures</h1>
+      <h1 className="text-3xl font-bold tracking-tight mb-6 border-b border-slate-700 pb-4">VLM Gallery</h1>
       {images.length === 0 ? (
         <p>No images found (or not running inside Tauri).</p>
       ): (
@@ -186,7 +186,7 @@ export default function Page() {
 
       {storyPanelOpen && (
         <div className="fixed bottom-0 left-0 right-0 max-h-[60vh] overflow-y-auto bg-slate-800 border-t border-slate-700 p-8 z-40">
-          <h2 className="text-xl font-bold mb-4">The Story</h2>
+          <h2 className="text-xl font-bold mb-4">Story Generator</h2>
           {storyLoading && !story ? (
             <div className="flex items-center gap-3">
               <div className="w-6 h-6 border-2 border-slate-600 border-t-blue-400 rounded-full animate-spin"></div>

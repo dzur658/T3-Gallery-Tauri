@@ -1,6 +1,6 @@
 {
   "$schema": "../../../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "T3 Gallery Adapted",
+  "productName": "VLM Gallery",
   "version": "0.1.0",
   "identifier": "com.tauri.dev",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "T3 Gallery Adapted",
+        "title": "VLM Gallery",
         "width": 800,
         "height": 600,
         "resizable": true,
