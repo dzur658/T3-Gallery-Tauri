@@ -2,10 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-import { load_image, TextStreamer, PreTrainedTokenizer } from "@huggingface/transformers"
-import type { Tensor } from "@huggingface/transformers";
-
-import { getVLM } from "../../lib/vlm";
+import { getVLMResponse } from "../../lib/vlm";
 
 interface LightboxProps {
   selected: string | null;
@@ -28,50 +25,16 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
     setLoading(true);
     setCaption("");
     try {
-      const { processor, model } = await getVLM();
+      if (!(typeof selected === "string")) {
+        throw new Error("VLM error: Invalid input types");
+      }
 
-      const tokenizer = processor.tokenizer;
-
-      if (typeof selected === "string" && tokenizer instanceof PreTrainedTokenizer) {
-
-        const messages = [
-        {
-          role: "user",
-          content: [
-            { type: "image", image: selected },
-            { type: "text", text: "Describe this photo in one vivid sentence." },
-          ],
-        },
-      ];
-      
-      const prompt = processor.apply_chat_template(messages, {
-        add_generation_prompt: true,
-      });
-
-      const image = await load_image(selected);
-      const audio = null;
-      const inputs: Record<string, Tensor> = await processor(prompt, image, audio, {
-        add_special_tokens: false,
-      });
-
-      console.log("Object Keys:", Object.keys(inputs));
-      console.log("Dimensions/shapes of tensors:", inputs.input_features);
-
-      await model.generate({
-        ...inputs,
-        max_new_tokens: 100,
-        do_sample: false,
-        streamer: new TextStreamer(tokenizer, {
-          skip_prompt: true,
-          skip_special_tokens: true,
-          callback_function: (text: string) => {
-            setCaption((prev) => (prev ?? "") + text);
-          }
-        }),
-      });
-    } else {
-      console.error("VLM error: Invalid input types");
-    }
+      await getVLMResponse(
+        "Describe this photo in one vivid sentence.",
+        [selected],
+        true,
+        (text: string) => setCaption((prev) => prev + text),
+      );
     } catch (error) {
       console.error("VLM error:", error);
     } finally {

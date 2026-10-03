@@ -8,21 +8,7 @@ import { readDir } from "@tauri-apps/plugin-fs";
 
 import Lightbox from "./components/Lightbox";
 
-import { load_image, TextStreamer, PreTrainedTokenizer } from "@huggingface/transformers";
-
-import { getVLM } from "../lib/vlm";
-
-// image cache
-const imageCache = new Map<string, Awaited<ReturnType<typeof load_image>>>();
-
-async function getLoadedImage(url: string) {
-  let img = imageCache.get(url);
-  if (!img) {
-    img = await load_image(url);
-    imageCache.set(url, img);
-  }
-  return img;
-}
+import { getVLMResponse } from "../lib/vlm";
 
 export default function Page() {
   const [images, setImages] = useState<string[]>([]);
@@ -50,52 +36,15 @@ export default function Page() {
       setStoryPanelOpen(true);
       setStory("");
       try {
-        const { processor, model } = await getVLM();
-  
-        const tokenizer = processor.tokenizer;
-  
-        if (tokenizer instanceof PreTrainedTokenizer) {
-  
-          const messages = [
-          {
-            role: "user",
-            content: [
-              ...selectedStoryURLs.map((url) => ({ type: "image", image: url })),
-              { type: "text", text: `You write REALLY FUNNY STORIES but you've only ever seen these ${selectedStoryURLs.length} images.
-              Write a story that connects the dots however absurd it may be. You are not allowed to describe the photos individually,
-              you must weave them all together into a semi-coherent story. Emoji use is permitted for irony. Your story can be no longer than
-              15 sentences long.` },
-            ],
-          },
-        ];
-        
-        const prompt = processor.apply_chat_template(messages, {
-          add_generation_prompt: true,
-        });
-        
-        // adapted for multiple images
-        const imageList = await Promise.all(selectedStoryURLs.map(getLoadedImage));
-        const audio = null;
-        const inputs = await processor(prompt, imageList, audio, {
-          add_special_tokens: false,
-        });
-  
-        await model.generate({
-          ...inputs,
-          max_new_tokens: 500,
-          do_sample: true,
-          temperature: 0.7,
-          streamer: new TextStreamer(tokenizer, {
-            skip_prompt: true,
-            skip_special_tokens: true,
-            callback_function: (text: string) => {
-              setStory((prev) => (prev ?? "") + text);
-            }
-          }),
-        });
-      } else {
-        console.error("VLM error: Invalid input types");
-      }
+      await getVLMResponse(
+        `You write REALLY FUNNY STORIES but you've only ever seen these ${selectedStoryURLs.length} images.
+        Write a story that connects the dots however absurd it may be. You are not allowed to describe the photos individually,
+        you must weave them all together into a semi-coherent story. Emoji use is permitted for irony. Your story can be no longer than
+        15 sentences long.`,
+        selectedStoryURLs,
+        false,
+        (text: string) => setStory((prev) => (prev ?? "") + text),
+      );
       } catch (error) {
         console.error("VLM error:", error);
       } finally {
