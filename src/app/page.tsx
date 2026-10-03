@@ -33,6 +33,8 @@ export default function Page() {
   const [story, setStory] = useState<string | null>(null);
   const [storyLoading, setStoryLoading] = useState(false);
 
+  const [storyPanelOpen, setStoryPanelOpen] = useState(false);
+
   const toggleSelect = (url: string) =>
     setSelectedStoryURLs((prev) =>
     prev.includes(url)
@@ -42,6 +44,7 @@ export default function Page() {
 
     const handleStory = async ( ) => {
       setStoryLoading(true);
+      setStoryPanelOpen(true);
       setStory("");
       try {
         const { processor, model } = await getVLM();
@@ -175,17 +178,28 @@ export default function Page() {
         <button
           onClick={handleStory}
           disabled={storyLoading}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full shadow-xl cursor-pointer disabled:opacity-50 disabled:cursor-progress"
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-full shadow-xl cursor-pointer"
         >
-          {storyLoading ? "Writing a GREAT story..." : `Write story (${selectedStoryURLs.length} photos)`}
+          {`Write story (${selectedStoryURLs.length} photos)`}
         </button>
       )}
 
-      {story && (
-        <div className="fixed bottom-0 left-0 right-0 max-h-[60vh] overflow-y-auto bg-slate-900/95 border-t border-slate-700 p-8 z-40">
+      {storyPanelOpen && (
+        <div className="fixed bottom-0 left-0 right-0 max-h-[60vh] overflow-y-auto bg-slate-800 border-t border-slate-700 p-8 z-40">
           <h2 className="text-xl font-bold mb-4">The Story</h2>
-          <p className="whitespace-pre-wrap text-slate-200 leading-relaxed">{story}</p>
-          <button onClick={() => setStory(null)} className="mt-4 text-slate-400 hover:text-white cursor-pointer">
+          {storyLoading && !story ? (
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 border-2 border-slate-600 border-t-blue-400 rounded-full animate-spin"></div>
+              <p className="text-slate-400">Generating story...</p>
+            </div>
+          ) : (
+          <p className="whitespace-pre-wrap text-slate-200 max-w-4xl leading-relaxed">{story}</p>
+          )}
+          <button onClick={handleStory} className="relative bottom left p-2 mt-4 text-slate-400 hover:text-white cursor-pointer">
+            ↻ New Story
+          </button>
+          |
+          <button onClick={() => setStoryPanelOpen(false)} className="relative bottom left p-2 mt-4 text-slate-400 hover:text-white cursor-pointer">
             Close
           </button>
         </div>
