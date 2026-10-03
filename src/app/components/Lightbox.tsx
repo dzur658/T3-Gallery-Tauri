@@ -54,7 +54,6 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
           skip_prompt: true,
           skip_special_tokens: true,
           callback_function: (text: string) => {
-            console.log("VLM output:", text);
             setCaption((prev) => (prev ?? "") + text);
           }
         }),
@@ -92,7 +91,6 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
   return (
     <div
       className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-8"
-      onClick={onClose}
     >
       <button
         className="absolute top-4 right-4 text-white text-2xl cursor-pointer"
@@ -105,7 +103,7 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
       <button
         onClick={handleCaption}
         disabled={loading}
-        className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-lg cursor-pointer"
+        className="fixed bottom-4 mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-lg cursor-pointer"
       >
         {loading ? "Thinking…" : "Caption this"}
       </button>
