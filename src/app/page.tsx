@@ -72,7 +72,6 @@ export default function Page() {
       try {
         const dir = await pictureDir();
 
-        console.log("Pictures", dir);
         const entries = await readDir(dir);
         const paths = entries
           .filter(
@@ -90,9 +89,29 @@ export default function Page() {
 
   return (
     <main className="p-8 bg-slate-900 min-h-screen text-slate-100">
-      <h1 className="text-3xl font-bold tracking-tight mb-6 border-b border-slate-700 pb-4">VLM Gallery</h1>
+      <h1 className="text-3xl font-bold tracking-tight mb-6 pb-4">VLM Gallery</h1>
+      <div className="border-b border-slate-700 mb-8">
+        <ul className="mb-8 space-y-3 text-slate-300 leading-relaxed max-w-prose">
+        <li className="flex gap-3">
+          <span aria-hidden>⚡</span>
+          <span>Runs inference <strong className="text-slate-100 font-semibold">locally</strong> via transformers.js so no data leaves your machine</span>
+        </li>
+        <li className="flex gap-3">
+          <span aria-hidden>🖼️</span>
+          <span><strong className="text-slate-100 font-semibold">Gallery:</strong> browse your images in a grid; use arrow keys to navigate in fullscreen</span>
+        </li>
+        <li className="flex gap-3">
+          <span aria-hidden>💬</span>
+          <span><strong className="text-slate-100 font-semibold">Captions:</strong> click an image, then hit &quot;Caption this&quot;</span>
+        </li>
+        <li className="flex gap-3">
+          <span aria-hidden>📖</span>
+          <span><strong className="text-slate-100 font-semibold">Stories:</strong> select multiple images and click &quot;Generate Story&quot; to weave them together</span>
+        </li>
+      </ul>
+    </div>
       {images.length === 0 ? (
-        <p>No images found (or not running inside Tauri).</p>
+        <p>No images found or not running inside Tauri (make sure your picture directory has images in it).</p>
       ): (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {images.map((src) => {
