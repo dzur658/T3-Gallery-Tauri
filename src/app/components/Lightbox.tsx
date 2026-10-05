@@ -75,7 +75,7 @@ export default function Lightbox({ selected, onClose, onNavigate }: LightboxProp
       <img src={selected} alt="" className="max-w-full max-h-full rounded-lg shadow-2xl" />
 
         {caption && 
-        <div className="absolute bottom-15 left-2 right-2 bg-slate-800/85 backdrop-blur-sm border border-slate-700 rounded-lg px-3 py-2 shadow-lg mb-3 mx-4">
+        <div className="absolute max-w-m bottom-15 center-w bg-slate-800/85 backdrop-blur-sm border border-slate-700 rounded-lg px-3 py-2 shadow-lg mb-3 mx-4">
           <p className="text-sm text-slate-200 leading-snug">{caption}</p>
         </div>
         }
