@@ -68,7 +68,7 @@ export default function Page() {
     if (typeof window === "undefined") return;
     if (!("__TAURI_INTERNALS__" in window)) return;
 
-    (async () => {
+    const loadPictures = (async () => {
       try {
         const dir = await pictureDir();
 
@@ -84,6 +84,8 @@ export default function Page() {
         console.error("Failed to load pictures:", err);
       }
     })();
+
+    void loadPictures;
   }, []);
 
   return (
