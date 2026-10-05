@@ -8,7 +8,7 @@ import { readDir } from "@tauri-apps/plugin-fs";
 
 import Lightbox from "./components/Lightbox";
 
-import { getVLMResponse } from "../lib/vlm";
+import { getVLMResponse, getVLM } from "../lib/vlm";
 
 export default function Page() {
   const [images, setImages] = useState<string[]>([]);
@@ -23,6 +23,10 @@ export default function Page() {
   const [storyLoading, setStoryLoading] = useState(false);
 
   const [storyPanelOpen, setStoryPanelOpen] = useState(false);
+
+  // track model state
+  const [modelOverallPercent, setModelOverallPercent] = useState<number | undefined>(undefined);
+  const [modelReady, setModelReady] = useState(false);
 
   const toggleSelect = (url: string) =>
     setSelectedStoryURLs((prev) =>
@@ -87,6 +91,13 @@ export default function Page() {
     void loadPictures;
   }, []);
 
+useEffect(() => {
+  void getVLM((pct) => setModelOverallPercent(pct)).then(() => {
+    setModelReady(true); // ← fires when the model is ACTUALLY usable, not when bytes land
+  });
+}, []);
+
+
   return (
     <main className="p-8 bg-slate-900 min-h-screen text-slate-100">
       <h1 className="text-3xl font-bold tracking-tight mb-6 pb-4">VLM Gallery</h1>
@@ -115,6 +126,27 @@ export default function Page() {
         <strong className="text-slate-100 text-sm">
           <span className="text-slate-400">{selectedStoryURLs.length} / 5</span>
         </strong>
+      </div>
+    )}
+    {!modelReady && modelOverallPercent != null && (
+      <div className="mb-6 max-w-md">
+        <div className="mb-1 flex items-center justify-between text-xs text-slate-400">
+          <span>{modelReady ? "" : "Loading model (Downloads from Hugging Face on first run)…"}</span>
+          <span>{modelOverallPercent != null ? `${modelOverallPercent}%` : ""}</span>
+        </div>
+
+        <div className="h-2 rounded-full bg-slate-700 overflow-hidden">
+          {modelOverallPercent != null ? (
+            // determinate: library-reported aggregate percent
+            <div
+              className="h-full bg-sky-500 transition-all duration-200"
+              style={{ width: `${modelOverallPercent}%` }}
+            />
+          ) : (
+            // indeterminate: server didn't report sizes — pulse instead of lie
+            <div className="h-full w-1/3 bg-sky-500/60 animate-pulse" />
+          )}
+        </div>
       </div>
     )}
       {images.length === 0 ? (

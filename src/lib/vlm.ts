@@ -11,9 +11,13 @@ import {
 
  import type { Tensor } from "@huggingface/transformers";
 
-async function createVLM() {
+ import { makeProgressHandler, type ProgressUpdate } from "./download-progress";
+
+async function createVLM(update?: ProgressUpdate) {
+  const onProgress = makeProgressHandler(update);
+
   const model_id = "onnx-community/gemma-3n-E2B-it-ONNX";
-  const processor = await AutoProcessor.from_pretrained(model_id);
+  const processor = await AutoProcessor.from_pretrained(model_id, { progress_callback: onProgress });
   const model = await AutoModelForImageTextToText.from_pretrained(model_id, {
     dtype: {
       audio_encoder: "fp32",
@@ -21,7 +25,8 @@ async function createVLM() {
       embed_tokens: "q4",
       decoder_model_merged: "q4",
     },
-    device: navigator.gpu ? "webgpu" : "cpu"
+    device: navigator.gpu ? "webgpu" : "cpu",
+    progress_callback: onProgress,
   })
 
   return { processor, model };
@@ -71,13 +76,12 @@ async function getVLMResponse(input: string, images: string[], greedy: boolean, 
     });
   }
 
-// the precise type, derived from the real call:
 type VLM = Awaited<ReturnType<typeof createVLM>>;
 
 let vlmPromise: Promise<VLM> | null = null;
 
-export function getVLM(): Promise<VLM> {
-  vlmPromise = vlmPromise ?? createVLM();
+export function getVLM(update?: ProgressUpdate): Promise<VLM> {
+  vlmPromise ??= createVLM(update);
   return vlmPromise;
 }
 
