@@ -110,6 +110,13 @@ export default function Page() {
         </li>
       </ul>
     </div>
+    {selectedStoryURLs.length > 0 && (
+      <div className="w-12 h-12 rounded-full border border-slate-600 bg-slate-800 flex items-center justify-center mb-4">
+        <strong className="text-slate-100 text-sm">
+          <span className="text-slate-400">{selectedStoryURLs.length} / 5</span>
+        </strong>
+      </div>
+    )}
       {images.length === 0 ? (
         <p>No images found or not running inside Tauri (make sure your picture directory has images in it).</p>
       ): (
