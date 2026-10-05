@@ -38,5 +38,17 @@
     "**/*.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "generated"]
+  "exclude": [
+  "node_modules", 
+  "generated", 
+  "out",
+  "src-tauri/**"
+  ],
+  "ignores": [
+    ".next",
+    "out",
+    "next-env.d.ts",
+    "postcss.config.js",
+    "prettier.config.js",
+  ]
 }
