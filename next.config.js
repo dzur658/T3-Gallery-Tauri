@@ -6,6 +6,7 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
+    output: "export",
     images: {
         // No image optimization needed since images are fetched from localhost
         unoptimized: true,
